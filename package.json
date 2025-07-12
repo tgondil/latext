@@ -9,12 +9,14 @@
     "dev": "webpack serve --mode development --open"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.21.0",
+    "dotenv": "^16.4.5",
+    "katex": "^0.16.8",
+    "latex.js": "^0.12.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "katex": "^0.16.8",
     "react-katex": "^3.0.1",
-    "@google/generative-ai": "^0.21.0",
-    "dotenv": "^16.4.5"
+    "react-latex-next": "^3.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.22.0",
@@ -22,14 +24,20 @@
     "@babel/preset-react": "^7.22.0",
     "babel-loader": "^9.1.0",
     "css-loader": "^6.8.0",
+    "dotenv-webpack": "^8.0.1",
     "html-webpack-plugin": "^5.5.0",
     "style-loader": "^3.3.0",
     "webpack": "^5.88.0",
     "webpack-cli": "^5.1.0",
-    "webpack-dev-server": "^4.15.0",
-    "dotenv-webpack": "^8.0.1"
+    "webpack-dev-server": "^4.15.0"
   },
-  "keywords": ["latex", "academic", "paper", "react", "converter"],
+  "keywords": [
+    "latex",
+    "academic",
+    "paper",
+    "react",
+    "converter"
+  ],
   "author": "",
   "license": "MIT"
-} 
+}

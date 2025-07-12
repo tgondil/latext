@@ -1,10 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import 'katex/dist/katex.min.css';
 import { BlockMath, InlineMath } from 'react-katex';
+import LaTeX from 'react-latex-next';
 import './LatexRenderer.css';
 
 function LatexRenderer({ latex, isLoading, error, progress, isProgressive }) {
-  const [viewMode, setViewMode] = useState('document'); // 'source', 'rendered', 'document'
+  const [viewMode, setViewMode] = useState('compiled'); // 'source', 'rendered', 'document', 'compiled'
+  const [compiledLatex, setCompiledLatex] = useState('');
+  const [isCompiling, setIsCompiling] = useState(false);
+  
+  // Compile LaTeX when content changes
+  useEffect(() => {
+    if (latex && viewMode === 'compiled') {
+      compileLatex(latex);
+    }
+  }, [latex, viewMode]);
+
+  const compileLatex = async (latexContent) => {
+    if (!latexContent) return;
+    
+    setIsCompiling(true);
+    try {
+      // Clean the LaTeX content for compilation
+      const cleanLatex = latexContent
+        .replace(/\\documentclass\[[^\]]*\]\{[^}]*\}/g, '') // Remove document class
+        .replace(/\\usepackage\{[^}]*\}/g, '') // Remove usepackage commands
+        .replace(/\\begin\{document\}/g, '') // Remove begin document
+        .replace(/\\end\{document\}/g, '') // Remove end document
+        .replace(/\\maketitle/g, '') // Remove maketitle
+        .replace(/\\thispagestyle\{[^}]*\}/g, '') // Remove page style
+        .trim();
+
+      setCompiledLatex(cleanLatex);
+    } catch (error) {
+      console.error('LaTeX compilation error:', error);
+    } finally {
+      setIsCompiling(false);
+    }
+  };
   
   const renderContent = () => {
     // Show progressive content being built
@@ -22,7 +55,7 @@ function LatexRenderer({ latex, isLoading, error, progress, isProgressive }) {
                   <span></span>
                   <span></span>
                 </div>
-                <span className="progressive-text">Building document progressively...</span>
+                <span className="progressive-text">Building research paper progressively...</span>
               </div>
             )}
             {isLoading && (
@@ -82,26 +115,26 @@ function LatexRenderer({ latex, isLoading, error, progress, isProgressive }) {
     return (
       <div className="latex-placeholder">
         <div className="placeholder-icon">📄</div>
-        <h4>Your research paper will appear here</h4>
-        <p>Start typing to see your text converted to a beautifully formatted academic research paper</p>
+        <h4>Your visually stunning research paper will appear here</h4>
+        <p>Start typing to see your text converted to a beautifully formatted, publication-ready research paper</p>
         <div className="feature-preview">
           <div className="feature-item">
-            <strong>Research Paper Format:</strong> Automatic sections (Introduction, Methodology, Results, Discussion, Conclusion)
+            <strong>Visual Excellence:</strong> Publication-quality formatting with advanced LaTeX typography and elegant spacing
           </div>
           <div className="feature-item">
-            <strong>Professional Typography:</strong> Proper citations, abstracts, figures, and academic formatting
+            <strong>Professional Structure:</strong> Automatic sections, abstracts, citations, and academic formatting
           </div>
           <div className="feature-item">
-            <strong>Progressive Rendering:</strong> Watch your document build in real-time with multiple AI requests
+            <strong>Advanced Typography:</strong> Beautiful emphasis, boxes, visual separators, and enhanced readability
           </div>
           <div className="feature-item">
-            <strong>Multi-page Support:</strong> Automatic page breaks and publication-ready formatting
+            <strong>True LaTeX Rendering:</strong> Four view modes including actual LaTeX compilation and PDF-like rendering
           </div>
           <div className="feature-item">
-            <strong>Visual Excellence:</strong> LaTeX PDF-like appearance with proper spacing and typography
+            <strong>Progressive Building:</strong> Watch your document build in real-time with multiple AI requests
           </div>
           <div className="feature-item">
-            <strong>Math & Equations:</strong> Proper mathematical notation rendering with KaTeX
+            <strong>Mathematical Beauty:</strong> Elegant equation formatting and proper mathematical notation
           </div>
         </div>
       </div>
@@ -126,10 +159,40 @@ function LatexRenderer({ latex, isLoading, error, progress, isProgressive }) {
       
       case 'document':
         return renderAsDocument(latexCode);
+        
+      case 'compiled':
+        return renderCompiledLatex();
       
       default:
-        return renderAsDocument(latexCode);
+        return renderCompiledLatex();
     }
+  };
+
+  const renderCompiledLatex = () => {
+    if (isCompiling) {
+      return (
+        <div className="compilation-loading">
+          <div className="loading-spinner-small"></div>
+          <span>Compiling LaTeX...</span>
+        </div>
+      );
+    }
+
+    if (!compiledLatex) {
+      return (
+        <div className="no-content">
+          <p>No LaTeX content to compile</p>
+        </div>
+      );
+    }
+
+    return (
+      <div className="compiled-latex-container">
+        <div className="compiled-latex-page">
+          <LaTeX>{compiledLatex}</LaTeX>
+        </div>
+      </div>
+    );
   };
 
   const renderAsDocument = (latexCode) => {
@@ -535,6 +598,12 @@ function LatexRenderer({ latex, isLoading, error, progress, isProgressive }) {
               onClick={() => setViewMode('document')}
             >
               Paper View
+            </button>
+            <button 
+              className={`view-tab ${viewMode === 'compiled' ? 'active' : ''}`}
+              onClick={() => setViewMode('compiled')}
+            >
+              Compiled PDF
             </button>
           </div>
           <div className="export-buttons">
