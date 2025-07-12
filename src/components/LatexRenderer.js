@@ -2,7 +2,74 @@ import React from 'react';
 import 'katex/dist/katex.min.css';
 import './LatexRenderer.css';
 
-function LatexRenderer({ latex }) {
+function LatexRenderer({ latex, isLoading, error, progress }) {
+  const renderContent = () => {
+    if (isLoading) {
+      return (
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <h4>AI is crafting your academic paper...</h4>
+          <p>Using advanced chain-of-thought reasoning to create professional content</p>
+          {progress.total > 1 && (
+            <div className="progress-bar">
+              <div 
+                className="progress-fill"
+                style={{ width: `${(progress.current / progress.total) * 100}%` }}
+              ></div>
+              <span className="progress-text">
+                Processing chunk {progress.current + 1} of {progress.total}
+              </span>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    if (error) {
+      return (
+        <div className="error-container">
+          <div className="error-icon">⚠️</div>
+          <h4>AI Enhancement Error</h4>
+          <p>{error}</p>
+          <p className="error-fallback">Don't worry! We've generated a paper using our fallback system.</p>
+        </div>
+      );
+    }
+
+    if (latex) {
+      return (
+        <div className="latex-paper">
+          <div 
+            className="latex-output"
+            dangerouslySetInnerHTML={{ __html: renderLatexToHtml(latex) }}
+          />
+        </div>
+      );
+    }
+
+    return (
+      <div className="latex-placeholder">
+        <div className="placeholder-icon">📄</div>
+        <h4>Your academic paper will appear here</h4>
+        <p>Start typing in the input field to see the LaTeX-formatted paper preview</p>
+        <div className="feature-hints">
+          <div className="hint">
+            <span className="hint-icon">🤖</span>
+            <span>AI Enhancement: Professional academic formatting</span>
+          </div>
+          <div className="hint">
+            <span className="hint-icon">🔗</span>
+            <span>Chain of Thought: Intelligent content structuring</span>
+          </div>
+          <div className="hint">
+            <span className="hint-icon">📚</span>
+            <span>Academic Style: Proper citations and references</span>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="latex-renderer-container">
       <div className="latex-renderer-header">
@@ -11,27 +78,14 @@ function LatexRenderer({ latex }) {
           <button 
             className="export-btn"
             onClick={() => navigator.clipboard.writeText(latex)}
-            disabled={!latex}
+            disabled={!latex || isLoading}
           >
             Copy LaTeX
           </button>
         </div>
       </div>
       <div className="latex-content">
-        {latex ? (
-          <div className="latex-paper">
-            <div 
-              className="latex-output"
-              dangerouslySetInnerHTML={{ __html: renderLatexToHtml(latex) }}
-            />
-          </div>
-        ) : (
-          <div className="latex-placeholder">
-            <div className="placeholder-icon">📄</div>
-            <h4>Your academic paper will appear here</h4>
-            <p>Start typing in the input field to see the LaTeX-formatted paper preview</p>
-          </div>
-        )}
+        {renderContent()}
       </div>
     </div>
   );
