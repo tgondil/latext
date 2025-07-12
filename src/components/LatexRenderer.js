@@ -4,26 +4,42 @@ import './LatexRenderer.css';
 
 function LatexRenderer({ latex, isLoading, error, progress }) {
   const renderContent = () => {
+    // Show content with loading indicator if we have partial content and still loading
+    if (latex && isLoading) {
+      return (
+        <div className="progressive-container">
+          <div className="latex-paper">
+            <div 
+              className="latex-output"
+              dangerouslySetInnerHTML={{ __html: renderLatexToHtml(latex) }}
+            />
+          </div>
+          <div className="loading-footer">
+            <div className="loading-spinner-small"></div>
+            <span className="loading-text">Adding more content...</span>
+            {progress.total > 1 && (
+              <div className="progress-bar">
+                <div 
+                  className="progress-fill"
+                  style={{ width: `${(progress.current / progress.total) * 100}%` }}
+                ></div>
+                <span className="progress-text">
+                  Section {progress.current + 1} of {progress.total}
+                </span>
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    // Show loading state without content
     if (isLoading) {
       return (
         <div className="loading-container">
           <div className="loading-spinner"></div>
           <h4>Converting to LaTeX format...</h4>
           <p>Processing your text and preserving all content</p>
-          {progress.total > 1 && (
-            <div className="progress-bar">
-              <div 
-                className="progress-fill"
-                style={{ width: `${(progress.current / progress.total) * 100}%` }}
-              ></div>
-              <span className="progress-text">
-                Processing section {progress.current + 1} of {progress.total}
-              </span>
-            </div>
-          )}
-          {latex && (
-            <p className="progress-note">✨ Content is being added progressively above</p>
-          )}
         </div>
       );
     }
@@ -32,7 +48,7 @@ function LatexRenderer({ latex, isLoading, error, progress }) {
       return (
         <div className="error-container">
           <div className="error-icon">⚠️</div>
-          <h4>AI Enhancement Error</h4>
+          <h4>Conversion Error</h4>
           <p>{error}</p>
           <p className="error-fallback">Don't worry! We've generated a paper using our fallback system.</p>
         </div>
@@ -53,8 +69,8 @@ function LatexRenderer({ latex, isLoading, error, progress }) {
     return (
       <div className="latex-placeholder">
         <div className="placeholder-icon">📄</div>
-        <h4>Your academic paper will appear here</h4>
-        <p>Start typing in the input field to see the LaTeX-formatted paper preview</p>
+        <h4>Your LaTeX document will appear here</h4>
+        <p>Start typing in the input field to see your text converted to LaTeX format</p>
       </div>
     );
   };
