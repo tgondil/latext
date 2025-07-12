@@ -11,6 +11,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [progress, setProgress] = useState({ current: 0, total: 0 });
+  const [isProgressive, setIsProgressive] = useState(false);
   const debounceRef = useRef(null);
 
   const handleTextChange = useCallback(async (text) => {
@@ -32,6 +33,7 @@ function App() {
     debounceRef.current = setTimeout(async () => {
       try {
         setIsLoading(true);
+        setIsProgressive(false);
         setProgress({ current: 0, total: 1 });
         
         const latex = await geminiService.convertToAcademicPaper(
@@ -41,11 +43,16 @@ function App() {
           },
           (partialLatex) => {
             // Progressive rendering - update output as chunks are processed
+            setIsProgressive(true);
             setLatexOutput(partialLatex);
           }
         );
         
-        setLatexOutput(latex);
+        // Only update if we're not in progressive mode or this is the final result
+        if (!isProgressive || latex !== latexOutput) {
+          setLatexOutput(latex);
+        }
+        setIsProgressive(false);
       } catch (error) {
         console.error('Error converting text:', error);
         setError(error.message || 'Failed to convert text to LaTeX');
@@ -53,11 +60,12 @@ function App() {
         // Fallback to original conversion on error
         const latex = convertToLatex(text);
         setLatexOutput(latex);
+        setIsProgressive(false);
       } finally {
         setIsLoading(false);
       }
     }, 1000); // 1 second debounce
-  }, []);
+  }, [latexOutput, isProgressive]);
 
   return (
     <div className="app">
@@ -81,6 +89,7 @@ function App() {
             isLoading={isLoading}
             error={error}
             progress={progress}
+            isProgressive={isProgressive}
           />
         </div>
       </div>
