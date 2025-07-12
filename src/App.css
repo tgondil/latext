@@ -26,57 +26,7 @@
   font-weight: 300;
 }
 
-.header-controls {
-  margin-top: 1rem;
-}
 
-.ai-toggle {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  cursor: pointer;
-  user-select: none;
-}
-
-.ai-toggle input[type="checkbox"] {
-  display: none;
-}
-
-.toggle-slider {
-  width: 50px;
-  height: 24px;
-  background: rgba(255, 255, 255, 0.3);
-  border-radius: 24px;
-  position: relative;
-  transition: background 0.3s ease;
-}
-
-.toggle-slider::before {
-  content: '';
-  position: absolute;
-  width: 20px;
-  height: 20px;
-  background: white;
-  border-radius: 50%;
-  top: 2px;
-  left: 2px;
-  transition: transform 0.3s ease;
-}
-
-.ai-toggle input[type="checkbox"]:checked + .toggle-slider {
-  background: rgba(255, 255, 255, 0.8);
-}
-
-.ai-toggle input[type="checkbox"]:checked + .toggle-slider::before {
-  transform: translateX(26px);
-}
-
-.toggle-label {
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: white;
-  opacity: 0.9;
-}
 
 .app-content {
   flex: 1;

@@ -1,23 +1,40 @@
 # LaText - Academic Paper Generator
 
-LaText is a modern web application that converts plain text into beautifully formatted academic papers using LaTeX. Simply paste your text, and watch it transform into a professional academic document with proper sectioning, formatting, and styling.
+LaText is a modern web application that converts plain text into beautifully formatted academic papers using LaTeX. Powered by Google's Gemini AI with advanced chain-of-thought processing, it transforms your text into professional academic documents with proper sectioning, formatting, and styling.
 
 ## Features
 
+### 🤖 AI-Powered Enhancement
+- **Gemini AI Integration**: Powered by Google's advanced language model
+- **Chain of Thought Processing**: Intelligent analysis and structuring of your content
+- **Professional Academic Formatting**: AI applies proper academic writing conventions
+- **Intelligent Sectioning**: Automatically creates logical sections (Introduction, Methodology, Results, Conclusion)
+- **Abstract Generation**: Creates comprehensive abstracts from your content
+- **Large Document Support**: Processes large texts in chunks with context preservation
+
+### 🎯 Core Features
 - **Real-time Conversion**: Convert text to LaTeX academic format as you type
-- **Intelligent Formatting**: Automatically detects titles, sections, and abstracts
+- **Dual Processing Mode**: Choose between AI enhancement or fast basic conversion
 - **Professional Styling**: Beautiful academic paper layout with proper typography
 - **LaTeX Preview**: See your document rendered in real-time
 - **Copy to Clipboard**: Easily copy the generated LaTeX code
 - **Responsive Design**: Works seamlessly on desktop and mobile devices
+- **Error Handling**: Graceful fallback to basic conversion if AI processing fails
 
 ## Technology Stack
 
-- **React 18** - Modern UI framework
+### Core Technologies
+- **React 18** - Modern UI framework with hooks
 - **KaTeX** - LaTeX rendering engine
-- **Webpack** - Module bundler
+- **Webpack** - Module bundler and development server
 - **Babel** - JavaScript transpiler
 - **CSS3** - Modern styling with flexbox and grid
+
+### AI Integration
+- **Google Generative AI** - Gemini API for intelligent text processing
+- **Chain of Thought Prompting** - Advanced reasoning for academic formatting
+- **Intelligent Text Chunking** - Handles large documents efficiently
+- **Context Preservation** - Maintains coherence across document sections
 
 ## Getting Started
 
@@ -39,12 +56,20 @@ LaText is a modern web application that converts plain text into beautifully for
    npm install
    ```
 
-3. Start the development server:
+3. **Set up Gemini AI (for AI enhancement)**:
+   - Get your API key from [Google AI Studio](https://makersuite.google.com/app/apikey)
+   - Create a `.env` file in the project root:
+     ```env
+     REACT_APP_GEMINI_API_KEY=your_api_key_here
+     ```
+   - See [SETUP.md](SETUP.md) for detailed configuration
+
+4. Start the development server:
    ```bash
    npm start
    ```
 
-4. Open your browser and visit `http://localhost:3000`
+5. Open your browser and visit `http://localhost:3000`
 
 ### Available Scripts
 
@@ -54,10 +79,19 @@ LaText is a modern web application that converts plain text into beautifully for
 
 ## How It Works
 
+### With AI Enhancement (Recommended)
 1. **Input**: Enter your text in the left panel
-2. **Processing**: The text is intelligently parsed and converted to LaTeX
-3. **Rendering**: The LaTeX is rendered as a beautiful academic paper in the right panel
-4. **Export**: Copy the generated LaTeX code to use in your LaTeX editor
+2. **AI Analysis**: Gemini AI analyzes your content using chain-of-thought reasoning
+3. **Academic Structuring**: AI creates proper sections, abstracts, and formatting
+4. **LaTeX Generation**: Produces professional LaTeX code with academic conventions
+5. **Rendering**: See your beautifully formatted academic paper in real-time
+6. **Export**: Copy the generated LaTeX code to use in your LaTeX editor
+
+### Basic Mode (Fallback)
+1. **Input**: Enter your text in the left panel
+2. **Processing**: Fast rule-based conversion to LaTeX format
+3. **Rendering**: Basic academic paper structure with standard formatting
+4. **Export**: Copy the generated LaTeX code
 
 ## Text-to-LaTeX Conversion
 

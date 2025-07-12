@@ -11,7 +11,6 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [progress, setProgress] = useState({ current: 0, total: 0 });
-  const [useGemini, setUseGemini] = useState(true);
   const debounceRef = useRef(null);
 
   const handleTextChange = useCallback(async (text) => {
@@ -32,23 +31,17 @@ function App() {
     // Debounce API calls for better UX
     debounceRef.current = setTimeout(async () => {
       try {
-        if (useGemini) {
-          setIsLoading(true);
-          setProgress({ current: 0, total: 1 });
-          
-          const latex = await geminiService.convertToAcademicPaper(
-            text, 
-            (current, total) => {
-              setProgress({ current, total });
-            }
-          );
-          
-          setLatexOutput(latex);
-        } else {
-          // Fallback to original conversion
-          const latex = convertToLatex(text);
-          setLatexOutput(latex);
-        }
+        setIsLoading(true);
+        setProgress({ current: 0, total: 1 });
+        
+        const latex = await geminiService.convertToAcademicPaper(
+          text, 
+          (current, total) => {
+            setProgress({ current, total });
+          }
+        );
+        
+        setLatexOutput(latex);
       } catch (error) {
         console.error('Error converting text:', error);
         setError(error.message || 'Failed to convert text to LaTeX');
@@ -60,24 +53,13 @@ function App() {
         setIsLoading(false);
       }
     }, 1000); // 1 second debounce
-  }, [useGemini]);
+  }, []);
 
   return (
     <div className="app">
       <header className="app-header">
         <h1>LaText</h1>
-        <p>Transform your text into beautiful academic papers with AI</p>
-        <div className="header-controls">
-          <label className="ai-toggle">
-            <input
-              type="checkbox"
-              checked={useGemini}
-              onChange={(e) => setUseGemini(e.target.checked)}
-            />
-            <span className="toggle-slider"></span>
-            <span className="toggle-label">AI Enhancement</span>
-          </label>
-        </div>
+        <p>Transform your text into beautiful academic papers</p>
       </header>
       
       <div className="app-content">

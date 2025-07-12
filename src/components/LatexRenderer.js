@@ -52,20 +52,6 @@ function LatexRenderer({ latex, isLoading, error, progress }) {
         <div className="placeholder-icon">📄</div>
         <h4>Your academic paper will appear here</h4>
         <p>Start typing in the input field to see the LaTeX-formatted paper preview</p>
-        <div className="feature-hints">
-          <div className="hint">
-            <span className="hint-icon">🤖</span>
-            <span>AI Enhancement: Professional academic formatting</span>
-          </div>
-          <div className="hint">
-            <span className="hint-icon">🔗</span>
-            <span>Chain of Thought: Intelligent content structuring</span>
-          </div>
-          <div className="hint">
-            <span className="hint-icon">📚</span>
-            <span>Academic Style: Proper citations and references</span>
-          </div>
-        </div>
       </div>
     );
   };
