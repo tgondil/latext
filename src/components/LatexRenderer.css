@@ -20,6 +20,42 @@
   color: #1e293b;
 }
 
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.view-mode-tabs {
+  display: flex;
+  background: #f1f5f9;
+  border-radius: 6px;
+  padding: 2px;
+}
+
+.view-tab {
+  padding: 0.5rem 1rem;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.view-tab:hover {
+  color: #475569;
+  background: #e2e8f0;
+}
+
+.view-tab.active {
+  background: white;
+  color: #667eea;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
 .export-buttons {
   display: flex;
   gap: 0.5rem;
@@ -76,10 +112,31 @@
 }
 
 .latex-placeholder p {
-  margin: 0;
+  margin: 0 0 1.5rem 0;
   font-size: 0.875rem;
-  max-width: 300px;
+  max-width: 400px;
   line-height: 1.5;
+}
+
+.feature-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 350px;
+}
+
+.feature-item {
+  text-align: left;
+  padding: 0.75rem 1rem;
+  background: #f8fafc;
+  border-radius: 6px;
+  border-left: 3px solid #667eea;
+  font-size: 0.875rem;
+  color: #475569;
+}
+
+.feature-item strong {
+  color: #1e293b;
 }
 
 .latex-paper {
@@ -94,6 +151,7 @@
   font-family: 'Times New Roman', Times, serif;
   font-size: 16px;
   line-height: 1.6;
+  padding: 1.5rem;
 }
 
 .paper-title {
@@ -248,6 +306,84 @@
 .math-inline {
   font-family: 'Times New Roman', Times, serif;
   font-style: italic;
+}
+
+/* LaTeX Source View */
+.latex-source {
+  height: 100%;
+  overflow-y: auto;
+}
+
+.latex-code {
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0;
+  padding: 1.5rem;
+  background: #f8fafc;
+  border: none;
+  color: #1e293b;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.latex-code code {
+  background: none;
+  padding: 0;
+  font-size: inherit;
+}
+
+/* LaTeX Rendered View */
+.latex-rendered {
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #1e293b;
+  padding: 1.5rem;
+}
+
+.latex-text-content {
+  margin-bottom: 0;
+}
+
+.latex-text-content:last-child {
+  margin-bottom: 0;
+}
+
+/* Math Rendering */
+.katex-display {
+  margin: 1.5rem 0 !important;
+}
+
+.katex {
+  font-size: 1em !important;
+}
+
+.math-error {
+  background: #fef2f2;
+  color: #dc2626;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+  font-size: 0.875em;
+  border: 1px solid #fecaca;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .header-controls {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+  }
+  
+  .view-mode-tabs {
+    order: 2;
+  }
+  
+  .export-buttons {
+    order: 1;
+  }
 }
 
 /* Loading States */

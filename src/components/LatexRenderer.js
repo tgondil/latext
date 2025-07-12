@@ -1,18 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import 'katex/dist/katex.min.css';
+import { BlockMath, InlineMath } from 'react-katex';
 import './LatexRenderer.css';
 
 function LatexRenderer({ latex, isLoading, error, progress }) {
+  const [viewMode, setViewMode] = useState('rendered'); // 'source', 'rendered', 'preview'
   const renderContent = () => {
     // Show content with loading indicator if we have partial content and still loading
     if (latex && isLoading) {
       return (
         <div className="progressive-container">
           <div className="latex-paper">
-            <div 
-              className="latex-output"
-              dangerouslySetInnerHTML={{ __html: renderLatexToHtml(latex) }}
-            />
+            {renderLatexContent(latex)}
           </div>
           <div className="loading-footer">
             <div className="loading-spinner-small"></div>
@@ -39,7 +38,7 @@ function LatexRenderer({ latex, isLoading, error, progress }) {
         <div className="loading-container">
           <div className="loading-spinner"></div>
           <h4>Converting to LaTeX format...</h4>
-          <p>Processing your text and preserving all content</p>
+          <p>Processing your text with proper LaTeX rendering</p>
         </div>
       );
     }
@@ -58,10 +57,7 @@ function LatexRenderer({ latex, isLoading, error, progress }) {
     if (latex) {
       return (
         <div className="latex-paper">
-          <div 
-            className="latex-output"
-            dangerouslySetInnerHTML={{ __html: renderLatexToHtml(latex) }}
-          />
+          {renderLatexContent(latex)}
         </div>
       );
     }
@@ -70,23 +66,180 @@ function LatexRenderer({ latex, isLoading, error, progress }) {
       <div className="latex-placeholder">
         <div className="placeholder-icon">📄</div>
         <h4>Your LaTeX document will appear here</h4>
-        <p>Start typing in the input field to see your text converted to LaTeX format</p>
+        <p>Start typing to see your text converted to LaTeX with proper math rendering</p>
+        <div className="feature-preview">
+          <div className="feature-item">
+            <strong>Source:</strong> View raw LaTeX code
+          </div>
+          <div className="feature-item">
+            <strong>Rendered:</strong> See math equations properly rendered
+          </div>
+          <div className="feature-item">
+            <strong>Preview:</strong> Document structure preview
+          </div>
+        </div>
       </div>
     );
+  };
+
+  const renderLatexContent = (latexCode) => {
+    if (!latexCode) return null;
+
+    switch (viewMode) {
+      case 'source':
+        return (
+          <div className="latex-source">
+            <pre className="latex-code">
+              <code>{latexCode}</code>
+            </pre>
+          </div>
+        );
+      
+      case 'rendered':
+        return renderLatexWithMath(latexCode);
+      
+      case 'preview':
+        return (
+          <div className="latex-output">
+            <div dangerouslySetInnerHTML={{ __html: renderLatexToHtml(latexCode) }} />
+          </div>
+        );
+      
+      default:
+        return renderLatexWithMath(latexCode);
+    }
+  };
+
+  const renderLatexWithMath = (latexCode) => {
+    // Split the LaTeX into text and math parts
+    const parts = parseLatexContent(latexCode);
+    
+    return (
+      <div className="latex-rendered">
+        {parts.map((part, index) => {
+          if (part.type === 'math-display') {
+            try {
+              return <BlockMath key={index} math={part.content} />;
+            } catch (e) {
+              return <div key={index} className="math-error">Math Error: {part.content}</div>;
+            }
+          } else if (part.type === 'math-inline') {
+            try {
+              return <InlineMath key={index} math={part.content} />;
+            } catch (e) {
+              return <span key={index} className="math-error">{part.content}</span>;
+            }
+          } else {
+            return (
+              <div 
+                key={index} 
+                className="latex-text-content"
+                dangerouslySetInnerHTML={{ __html: renderLatexToHtml(part.content) }}
+              />
+            );
+          }
+        })}
+      </div>
+    );
+  };
+
+  const parseLatexContent = (latex) => {
+    const parts = [];
+    let currentIndex = 0;
+    
+    // Find display math $$...$$
+    const displayMathRegex = /\$\$([^$]+)\$\$/g;
+    // Find inline math $...$
+    const inlineMathRegex = /\$([^$]+)\$/g;
+    
+    // First extract display math
+    let match;
+    let allMatches = [];
+    
+    while ((match = displayMathRegex.exec(latex)) !== null) {
+      allMatches.push({
+        type: 'math-display',
+        content: match[1],
+        start: match.index,
+        end: match.index + match[0].length
+      });
+    }
+    
+    // Then extract inline math (avoiding display math areas)
+    let tempLatex = latex;
+    allMatches.forEach(m => {
+      tempLatex = tempLatex.substring(0, m.start) + '§'.repeat(m.end - m.start) + tempLatex.substring(m.end);
+    });
+    
+    while ((match = inlineMathRegex.exec(tempLatex)) !== null) {
+      allMatches.push({
+        type: 'math-inline',
+        content: latex.substring(match.index + 1, match.index + match[0].length - 1),
+        start: match.index,
+        end: match.index + match[0].length
+      });
+    }
+    
+    // Sort by position
+    allMatches.sort((a, b) => a.start - b.start);
+    
+    // Build parts array
+    let lastEnd = 0;
+    allMatches.forEach(match => {
+      if (match.start > lastEnd) {
+        parts.push({
+          type: 'text',
+          content: latex.substring(lastEnd, match.start)
+        });
+      }
+      parts.push(match);
+      lastEnd = match.end;
+    });
+    
+    if (lastEnd < latex.length) {
+      parts.push({
+        type: 'text',
+        content: latex.substring(lastEnd)
+      });
+    }
+    
+    return parts.length > 0 ? parts : [{ type: 'text', content: latex }];
   };
 
   return (
     <div className="latex-renderer-container">
       <div className="latex-renderer-header">
-        <h3>Academic Paper Preview</h3>
-        <div className="export-buttons">
-          <button 
-            className="export-btn"
-            onClick={() => navigator.clipboard.writeText(latex)}
-            disabled={!latex || isLoading}
-          >
-            Copy LaTeX
-          </button>
+        <h3>LaTeX Document</h3>
+        <div className="header-controls">
+          <div className="view-mode-tabs">
+            <button 
+              className={`view-tab ${viewMode === 'source' ? 'active' : ''}`}
+              onClick={() => setViewMode('source')}
+            >
+              Source
+            </button>
+            <button 
+              className={`view-tab ${viewMode === 'rendered' ? 'active' : ''}`}
+              onClick={() => setViewMode('rendered')}
+            >
+              Rendered
+            </button>
+            <button 
+              className={`view-tab ${viewMode === 'preview' ? 'active' : ''}`}
+              onClick={() => setViewMode('preview')}
+            >
+              Preview
+            </button>
+          </div>
+          <div className="export-buttons">
+            <button 
+              className="export-btn"
+              onClick={() => navigator.clipboard.writeText(latex)}
+              disabled={!latex || isLoading}
+            >
+              Copy LaTeX
+            </button>
+          </div>
         </div>
       </div>
       <div className="latex-content">
