@@ -200,6 +200,56 @@
   color: #475569;
 }
 
+.latex-output u {
+  text-decoration: underline;
+}
+
+.latex-output code {
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+  background: #f1f5f9;
+  padding: 0.2rem 0.4rem;
+  border-radius: 3px;
+  font-size: 0.9em;
+}
+
+.paper-subsubsection {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 1.25rem 0 0.5rem 0;
+  color: #475569;
+}
+
+.reference {
+  color: #667eea;
+  font-weight: 500;
+}
+
+.latex-quote {
+  margin: 1.5rem 2rem;
+  padding: 1rem 1.5rem;
+  border-left: 4px solid #e2e8f0;
+  background: #f8fafc;
+  font-style: italic;
+  color: #64748b;
+}
+
+.text-center {
+  text-align: center;
+  margin: 1rem 0;
+}
+
+.math-display {
+  margin: 1rem 0;
+  text-align: center;
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 1.1em;
+}
+
+.math-inline {
+  font-family: 'Times New Roman', Times, serif;
+  font-style: italic;
+}
+
 /* Loading States */
 .loading-container {
   display: flex;

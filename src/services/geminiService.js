@@ -119,7 +119,7 @@ ${chunk}`;
     }
   }
 
-  async convertToAcademicPaper(text, onProgress) {
+  async convertToAcademicPaper(text, onProgress, onPartialUpdate) {
     if (!text || !text.trim()) {
       return '';
     }
@@ -127,40 +127,40 @@ ${chunk}`;
     try {
       const chunks = this.chunker.chunkText(text);
       
+      // Create LaTeX document structure
+      let latexDocument = this.createDocumentHeader(text);
+      
       if (chunks.length === 1) {
         // Single chunk processing
         if (onProgress) onProgress(0, 1);
         const result = await this.processTextChunk(chunks[0], true);
+        const cleanResult = this.cleanLatexOutput(result);
+        latexDocument += cleanResult + '\n\n\\end{document}';
         if (onProgress) onProgress(1, 1);
-        return this.cleanLatexOutput(result);
+        return latexDocument;
       }
 
-      // Multiple chunks processing with chain of thought
-      let finalPaper = '';
-      let previousContext = '';
-      
+      // Multiple chunks processing with progressive rendering
       for (let i = 0; i < chunks.length; i++) {
         if (onProgress) onProgress(i, chunks.length);
         
-        const result = await this.processTextChunk(
-          chunks[i], 
-          i === 0, 
-          previousContext
-        );
+        const result = await this.processTextChunk(chunks[i], i === 0);
+        const cleanResult = this.cleanLatexOutput(result);
         
-        if (i === 0) {
-          finalPaper = result;
-          previousContext = this.extractContext(result);
-        } else {
-          // Merge subsequent chunks intelligently
-          const mergedPaper = this.mergeChunks(finalPaper, result);
-          finalPaper = mergedPaper;
-          previousContext = this.extractContext(result);
+        // Add the chunk content to document
+        latexDocument += cleanResult + '\n\n';
+        
+        // Call partial update callback for progressive rendering
+        if (onPartialUpdate) {
+          const currentDocument = latexDocument + '\\end{document}';
+          onPartialUpdate(currentDocument);
         }
       }
       
+      // Finalize document
+      latexDocument += '\\end{document}';
       if (onProgress) onProgress(chunks.length, chunks.length);
-      return this.cleanLatexOutput(finalPaper);
+      return latexDocument;
       
     } catch (error) {
       console.error('Error converting to academic paper:', error);
@@ -168,50 +168,28 @@ ${chunk}`;
     }
   }
 
-  extractContext(latexText) {
-    // Extract key information for context in next chunk
-    const lines = latexText.split('\n');
-    const contextLines = [];
+  createDocumentHeader(text) {
+    // Generate a simple title from the first line or paragraph
+    const firstLine = text.split('\n')[0].trim();
+    const title = firstLine.length < 100 ? firstLine : 'Converted Document';
     
-    for (const line of lines) {
-      if (line.includes('\\title{') || 
-          line.includes('\\section{') || 
-          line.includes('\\subsection{')) {
-        contextLines.push(line);
-      }
-    }
-    
-    return contextLines.join('\n');
-  }
+    return `\\documentclass{article}
+\\usepackage[utf8]{inputenc}
+\\usepackage{amsmath}
+\\usepackage{amsfonts}
+\\usepackage{amssymb}
+\\usepackage{cite}
+\\usepackage{graphicx}
+\\usepackage{hyperref}
 
-  mergeChunks(basePaper, additionalContent) {
-    // Intelligent merging of LaTeX chunks
-    const baseLines = basePaper.split('\n');
-    const additionalLines = additionalContent.split('\n');
-    
-    // Find the end of document in base paper
-    const endDocIndex = baseLines.findIndex(line => line.includes('\\end{document}'));
-    
-    // Extract new content (skip document preamble)
-    const newContent = additionalLines.filter(line => 
-      !line.includes('\\documentclass') &&
-      !line.includes('\\usepackage') &&
-      !line.includes('\\title{') &&
-      !line.includes('\\author{') &&
-      !line.includes('\\date{') &&
-      !line.includes('\\begin{document}') &&
-      !line.includes('\\maketitle') &&
-      !line.includes('\\end{document}')
-    ).join('\n');
-    
-    // Insert new content before \end{document}
-    if (endDocIndex !== -1) {
-      baseLines.splice(endDocIndex, 0, newContent);
-    } else {
-      baseLines.push(newContent);
-    }
-    
-    return baseLines.join('\n');
+\\title{${title}}
+\\author{Author}
+\\date{\\today}
+
+\\begin{document}
+\\maketitle
+
+`;
   }
 
   cleanLatexOutput(latexText) {
@@ -219,6 +197,14 @@ ${chunk}`;
     return latexText
       .replace(/```latex/g, '')
       .replace(/```/g, '')
+      .replace(/\\documentclass{.*}/g, '')
+      .replace(/\\usepackage{.*}/g, '')
+      .replace(/\\begin{document}/g, '')
+      .replace(/\\end{document}/g, '')
+      .replace(/\\title{.*}/g, '')
+      .replace(/\\author{.*}/g, '')
+      .replace(/\\date{.*}/g, '')
+      .replace(/\\maketitle/g, '')
       .replace(/\n\s*\n\s*\n/g, '\n\n') // Remove excessive line breaks
       .trim();
   }

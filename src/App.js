@@ -38,6 +38,10 @@ function App() {
           text, 
           (current, total) => {
             setProgress({ current, total });
+          },
+          (partialLatex) => {
+            // Progressive rendering - update output as chunks are processed
+            setLatexOutput(partialLatex);
           }
         );
         
