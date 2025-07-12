@@ -95,24 +95,18 @@ class GeminiService {
     }
   }
 
-  async processTextChunk(chunk, isFirstChunk = false, previousContext = '') {
+  async processTextChunk(chunk, isFirstChunk = false) {
     await this.initialize();
     
-    let prompt = ACADEMIC_PAPER_PROMPT + chunk;
+    let prompt = LATEX_CONVERSION_PROMPT + chunk;
     
-    // Add context for subsequent chunks
-    if (!isFirstChunk && previousContext) {
-      prompt = `
-${ACADEMIC_PAPER_PROMPT}
+    // For subsequent chunks, just add continuation instruction
+    if (!isFirstChunk) {
+      prompt = `${LATEX_CONVERSION_PROMPT}
 
-CONTEXT FROM PREVIOUS SECTIONS:
-${previousContext}
+CONTINUATION CHUNK: This is a continuation of content. Convert this additional text to LaTeX format and it will be appended to the previous content.
 
-CONTINUE THE ACADEMIC PAPER WITH THIS ADDITIONAL CONTENT:
-${chunk}
-
-Please continue the paper by extending the existing sections or adding new ones as appropriate. Maintain consistency with the previous content.
-`;
+${chunk}`;
     }
 
     try {
