@@ -71,7 +71,7 @@ function App() {
     <div className="app">
       <header className="app-header">
         <h1>LaText</h1>
-        <p>Transform your text into beautiful academic papers</p>
+        <p>Transform your text into beautiful academic research papers with professional formatting</p>
       </header>
       
       <div className="app-content">
@@ -79,7 +79,7 @@ function App() {
           <TextInput 
             value={inputText}
             onChange={handleTextChange}
-            placeholder="Enter your text here to convert it into an academic paper..."
+            placeholder="Enter your text here to convert it into a professionally formatted research paper..."
           />
         </div>
         

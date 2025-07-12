@@ -54,8 +54,8 @@ function LatexRenderer({ latex, isLoading, error, progress, isProgressive }) {
       return (
         <div className="loading-container">
           <div className="loading-spinner"></div>
-          <h4>Converting to LaTeX format...</h4>
-          <p>Processing your text for multi-page academic document</p>
+          <h4>Converting to research paper format...</h4>
+          <p>Processing your text with professional academic formatting and multi-page support</p>
         </div>
       );
     }
@@ -82,20 +82,26 @@ function LatexRenderer({ latex, isLoading, error, progress, isProgressive }) {
     return (
       <div className="latex-placeholder">
         <div className="placeholder-icon">📄</div>
-        <h4>Your LaTeX document will appear here</h4>
-        <p>Start typing to see your text converted to LaTeX with multi-page support</p>
+        <h4>Your research paper will appear here</h4>
+        <p>Start typing to see your text converted to a beautifully formatted academic research paper</p>
         <div className="feature-preview">
           <div className="feature-item">
-            <strong>Multi-page:</strong> Automatic page breaks and formatting
+            <strong>Research Paper Format:</strong> Automatic sections (Introduction, Methodology, Results, Discussion, Conclusion)
           </div>
           <div className="feature-item">
-            <strong>Progressive:</strong> See your document build in real-time
+            <strong>Professional Typography:</strong> Proper citations, abstracts, figures, and academic formatting
           </div>
           <div className="feature-item">
-            <strong>Academic:</strong> Professional academic paper formatting
+            <strong>Progressive Rendering:</strong> Watch your document build in real-time with multiple AI requests
           </div>
           <div className="feature-item">
-            <strong>Document:</strong> Proper LaTeX document rendering
+            <strong>Multi-page Support:</strong> Automatic page breaks and publication-ready formatting
+          </div>
+          <div className="feature-item">
+            <strong>Visual Excellence:</strong> LaTeX PDF-like appearance with proper spacing and typography
+          </div>
+          <div className="feature-item">
+            <strong>Math & Equations:</strong> Proper mathematical notation rendering with KaTeX
           </div>
         </div>
       </div>
@@ -509,26 +515,26 @@ function LatexRenderer({ latex, isLoading, error, progress, isProgressive }) {
   return (
     <div className="latex-renderer-container">
       <div className="latex-renderer-header">
-        <h3>LaTeX Document</h3>
+        <h3>Research Paper Document</h3>
         <div className="header-controls">
           <div className="view-mode-tabs">
             <button 
               className={`view-tab ${viewMode === 'source' ? 'active' : ''}`}
               onClick={() => setViewMode('source')}
             >
-              Source
+              LaTeX Source
             </button>
             <button 
               className={`view-tab ${viewMode === 'rendered' ? 'active' : ''}`}
               onClick={() => setViewMode('rendered')}
             >
-              Rendered
+              Math Rendered
             </button>
             <button 
               className={`view-tab ${viewMode === 'document' ? 'active' : ''}`}
               onClick={() => setViewMode('document')}
             >
-              Document
+              Paper View
             </button>
           </div>
           <div className="export-buttons">
