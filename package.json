@@ -12,7 +12,9 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "katex": "^0.16.8",
-    "react-katex": "^3.0.1"
+    "react-katex": "^3.0.1",
+    "@google/generative-ai": "^0.21.0",
+    "dotenv": "^16.4.5"
   },
   "devDependencies": {
     "@babel/core": "^7.22.0",
@@ -24,7 +26,8 @@
     "style-loader": "^3.3.0",
     "webpack": "^5.88.0",
     "webpack-cli": "^5.1.0",
-    "webpack-dev-server": "^4.15.0"
+    "webpack-dev-server": "^4.15.0",
+    "dotenv-webpack": "^8.0.1"
   },
   "keywords": ["latex", "academic", "paper", "react", "converter"],
   "author": "",
