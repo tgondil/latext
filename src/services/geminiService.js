@@ -9,40 +9,31 @@ const getGeminiAPI = () => {
   return new GoogleGenerativeAI(apiKey);
 };
 
-// Academic paper formatting prompt with chain of thought
-const ACADEMIC_PAPER_PROMPT = `
-You are an expert academic writing assistant. Your task is to convert any given text into a well-structured, professional academic paper in LaTeX format.
+// Direct LaTeX conversion prompt - preserves all content
+const LATEX_CONVERSION_PROMPT = `
+You are a LaTeX conversion specialist. Your task is to convert the given text directly into properly formatted LaTeX code while preserving ALL original content exactly as provided.
 
-CHAIN OF THOUGHT PROCESS:
-1. First, analyze the input text to understand its main theme and structure
-2. Identify key concepts, arguments, and supporting evidence
-3. Determine the most appropriate academic structure (sections, subsections)
-4. Apply proper academic writing conventions and formatting
-5. Generate clean, compilable LaTeX code
+CRITICAL REQUIREMENTS:
+- PRESERVE ALL CONTENT: Do not summarize, omit, or rephrase any text
+- DIRECT CONVERSION: Convert the text as-is into LaTeX format
+- NO RESTRUCTURING: Keep the original organization and flow
+- ALL TEXT INCLUDED: Every sentence, paragraph, and detail must be preserved
 
-FORMATTING REQUIREMENTS:
-- Use proper LaTeX document structure with appropriate packages
-- Create a compelling, academic-style title from the content
-- Generate a comprehensive abstract (150-250 words)
-- Structure content into logical sections: Introduction, Literature Review/Background, Methodology (if applicable), Results/Discussion, Conclusion
-- Use proper academic citations format: \\cite{authorYear}
-- Apply consistent formatting: \\textbf{} for emphasis, \\textit{} for definitions
-- Include proper mathematical expressions where relevant using \\[ \\] or $ $
-- Use itemize/enumerate for lists
-- Maintain academic tone throughout
-- Ensure proper paragraph structure and flow
+FORMATTING RULES:
+- Convert paragraph breaks to proper LaTeX paragraph spacing
+- Apply basic LaTeX formatting: \\textbf{} for emphasis, \\textit{} for italics
+- Handle lists with \\begin{itemize} or \\begin{enumerate}
+- Use \\section{}, \\subsection{} only if explicitly indicated in the original text
+- Preserve exact wording and sentence structure
+- Use proper LaTeX escaping for special characters
 
-QUALITY STANDARDS:
-- Professional academic language
-- Clear, logical progression of ideas
-- Appropriate depth and detail
-- Proper LaTeX syntax and compilation
-- Academic formatting conventions
-- Balanced section lengths
+OUTPUT FORMAT:
+- Return ONLY the LaTeX content (no document class, packages, or document environment)
+- Start immediately with the converted content
+- End cleanly without extra formatting
 
-Please convert the following text into a high-quality academic paper in LaTeX format:
+Convert this text to LaTeX while preserving every word and detail:
 
-INPUT TEXT:
 `;
 
 // Text chunking strategy for large documents
